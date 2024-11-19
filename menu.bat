@@ -13,6 +13,7 @@ echo 4. Renombrar Archivo
 echo 5. Eliminar Archivo
 echo 6. Crear Archivo
 echo 7. Crear Carpeta
+echo 8. Eliminar Carpeta y todo su contenido
 echo 0. Salir
 echo ==========================
 set /p "choice=Selecciona una opcion: "
@@ -24,6 +25,7 @@ if "%choice%"=="4" goto renombrarArchivo
 if "%choice%"=="5" goto eliminarArchivo
 if "%choice%"=="6" goto crearArchivo
 if "%choice%"=="7" goto crearCarpeta
+if "%choice%"=="8" goto eliminarCarpetaConTodo
 if "%choice%"=="0" goto salir
 echo Opcion invalida. Intentalo de nuevo.
 pause
@@ -80,11 +82,12 @@ echo ==========================
 echo Directorio actual: %cd%
 echo ==========================
 set /p "archivo=Introduce el nombre del archivo a eliminar (en el directorio actual): "
-if not exist "%cd%\%archivo%" (echo El archivo no existe en el directorio actual. & pause & goto menu)
+if not exist "%archivo%" (echo El archivo no existe en el directorio actual. & pause & goto menu)
+if exist "%archivo%\" (echo La entrada corresponde a un directorio, no a un archivo. & pause & goto menu)
 del "%archivo%" >nul && (echo Archivo eliminado con exito.) || (echo Error al eliminar el archivo.)
+
 pause
 goto menu
-
 :crearArchivo
 cls
 echo ==========================
@@ -104,6 +107,21 @@ echo ==========================
 set /p "carpeta=Introduce el nombre de la carpeta a crear (debe ser unica): "
 if exist "%cd%\%carpeta%" (echo Ya existe una carpeta con ese nombre en el directorio actual. & pause & goto menu)
 mkdir "%carpeta%" >nul && (echo Carpeta creada con exito.) || (echo Error al crear la carpeta.)
+pause
+goto menu
+
+:eliminarCarpetaConTodo
+cls
+echo ==========================
+echo Directorio actual: %cd%
+echo ==========================
+set /p "directorio=Introduce el nombre de la carpeta que desee eliminar definitivamente (en el directorio actual): "
+if not exist "%directorio%\" (echo La carpeta no existe en el directorio actual. & pause & goto menu)
+echo Estas a punto de eliminar la carpeta "%directorio%" y todo su contenido.
+set /p "confirmar=¿Estas seguro? (S/N): "
+if /i "%confirmar%"=="S" (rd /s /q "%directorio%" && (echo Carpeta eliminada con exito. ) || (echo Ocurrió un error al intentar eliminar la carpeta.)) else (echo Operacion cancelada.)
+pause
+goto menu
 pause
 goto menu
 
