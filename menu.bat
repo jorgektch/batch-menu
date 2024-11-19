@@ -2,7 +2,7 @@
 :menu
 cls
 echo ==========================
-echo         Menu
+echo           Menu
 echo ==========================
 echo Directorio actual: %cd%
 echo ==========================
